@@ -1,4 +1,8 @@
+
+
 use std::collections::HashMap;
+
+///Struct producing an iterator with the Fibonacci Number
 struct Fibonacci {
     curr: u64,
     next: u64,
@@ -34,6 +38,8 @@ fn frequency(s: &str) -> HashMap<char, i32> {
     h
 }
 
+
+///Definition of the generator FIB 
 const FIB: Fibonacci = Fibonacci { curr: 1, next: 1 };
 
 fn fib_code(num: u64) -> String {
@@ -57,7 +63,7 @@ fn fib_code(num: u64) -> String {
     code.chars().rev().chain("1".chars()).collect() // We reverse the chain and return it.
 }
 
-
+///Decoding of a string in Fibonacci base
 fn fib_decode(x: &str) -> u64{
     x[..x.len()-1].chars()
     .zip(FIB)
@@ -65,10 +71,35 @@ fn fib_decode(x: &str) -> u64{
     .fold(0, |acc, (_, x)| acc + x)
 }
 
+///Code a number in factorial number system 
+fn fact_code(num: u128) -> String {
+    let fact: Vec<u128> = (1..)
+        .scan(1, |state, x| {
+            *state = *state * x;
+            Some(*state)
+        })
+        .take_while(|x| num > *x)
+        .collect();
+    let mut rest = num;
+    let mut code = "".to_string();
+    for radix in fact.into_iter().rev() {
+        let i: u32 = (rest / radix) as u32;
+        rest = rest % radix;
+        code.push_str(&format!("/{}",i));
+    }
+    code
+}
+
+///Test of the function 
 fn main() {
     let _f = frequency("abaabcd");
     //println!("{:?}", f);
     let code = fib_code(30);
     println!("{}", code);
     println!("{:?}", fib_decode(&code));
+    
+    let x = fact_code(800000);
+    let y = fact_code(9856220);
+    let z = fact_code(463);
+    println!("{:?}", (&x,&y,&z,z.chars().filter(|&x| x=='/').count()));
 }
